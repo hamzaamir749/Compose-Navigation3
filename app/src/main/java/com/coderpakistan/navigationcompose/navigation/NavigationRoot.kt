@@ -6,24 +6,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavEntry
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import androidx.savedstate.serialization.SavedStateConfiguration
+import com.coderpakistan.navigationcompose.scenes.ListDetailScene
+import com.coderpakistan.navigationcompose.scenes.rememberListDetailSceneStrategy
 import com.coderpakistan.navigationcompose.screens.DifferentScreen
 import com.coderpakistan.navigationcompose.screens.TodoDetailScreen
 import com.coderpakistan.navigationcompose.screens.TodoListScreen
 
+
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
+import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 
 @Composable
 fun NavigationRoot(
@@ -37,12 +33,17 @@ fun NavigationRoot(
         Navigator(navigationState)
     }
 
+    val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
+    val isMultiPane = windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)
+
     val isTopLevelRoute = navigationState.currentRoute in TOP_LEVEL_DESTINATIONS.keys
+    val isListDetailActive = isMultiPane && navigationState.currentRoute is Route.TodoDetail
+    val shouldShowBottomBar = isTopLevelRoute || isListDetailActive
 
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            if (isTopLevelRoute) {
+            if (shouldShowBottomBar) {
                 TodoNavigationBar(
                     selectedKey = navigationState.topLevelRoute,
                     onSelectKey = {
@@ -57,9 +58,12 @@ fun NavigationRoot(
                 .fillMaxSize()
                 .padding(innerPadding),
             onBack = navigator::goBack,
+            sceneStrategies = listOf(rememberListDetailSceneStrategy()),
             entries = navigationState.toEntries(
                 entryProvider {
-                    entry<Route.TodoList> {
+                    entry<Route.TodoList>(
+                        metadata = ListDetailScene.listPane()
+                    ){
                         TodoListScreen(
                             onTodoClick = {
                                 navigator.navigate(Route.TodoDetail(it))
@@ -73,7 +77,9 @@ fun NavigationRoot(
                             }
                         )
                     }
-                    entry<Route.TodoDetail> {
+                    entry<Route.TodoDetail>(
+                        metadata = ListDetailScene.detailPane()
+                    ) {
                         TodoDetailScreen(
                             todo = it.todo
                         )

@@ -60,4 +60,7 @@ dependencies {
     implementation(libs.androidx.navigation3.viewmodel)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.compose.material3.window.size)
+    implementation(libs.androidx.window.core)
+    implementation(libs.androidx.compose.material3.adaptive)
 }
