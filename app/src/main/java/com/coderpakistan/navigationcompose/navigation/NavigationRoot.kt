@@ -20,6 +20,8 @@ import com.coderpakistan.navigationcompose.screens.TodoListScreen
 
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
+import com.coderpakistan.navigationcompose.screens.ChangeSettingScreen
+import com.coderpakistan.navigationcompose.screens.SettingsScreen
 
 @Composable
 fun NavigationRoot(
@@ -32,6 +34,8 @@ fun NavigationRoot(
     val navigator = remember {
         Navigator(navigationState)
     }
+
+    val resultStore = rememberResultStore()
 
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
     val isMultiPane = windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_MEDIUM_LOWER_BOUND)
@@ -88,13 +92,20 @@ fun NavigationRoot(
                         DifferentScreen()
                     }
                     entry<Route.Settings> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Settings")
-                        }
+                        SettingsScreen(
+                            resultStore = resultStore,
+                            onChangeSettingClick = {
+                                navigator.navigate(Route.ChangeSetting)
+                            }
+                        )
+                    }
+                    entry<Route.ChangeSetting> {
+                        ChangeSettingScreen(
+                            resultStore = resultStore,
+                            onSave = {
+                                navigator.goBack()
+                            }
+                        )
                     }
                 }
             )

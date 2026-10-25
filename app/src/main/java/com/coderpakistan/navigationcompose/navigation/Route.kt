@@ -19,5 +19,8 @@ sealed interface Route: NavKey {
     data object Settings: Route
 
     @Serializable
+    data object ChangeSetting: Route
+
+    @Serializable
     data object DifferentScreen: Route
 }
