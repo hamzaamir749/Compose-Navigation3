@@ -20,11 +20,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NavigationComposeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    NavigationRoot(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                NavigationRoot(
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }

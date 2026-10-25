@@ -29,6 +29,9 @@ class NavigationState(
 ) {
     var topLevelRoute by topLevelRoute
 
+    val currentRoute: NavKey?
+        get() = backStacks[topLevelRoute]?.lastOrNull()
+
     val stacksInUse: List<NavKey>
         get() = if(topLevelRoute == startRoute) {
             listOf(startRoute)
@@ -74,6 +77,7 @@ val serializersConfig = SavedStateConfiguration {
             subclass(Route.TodoDetail::class, Route.TodoDetail.serializer())
             subclass(Route.TodoFavorites::class, Route.TodoFavorites.serializer())
             subclass(Route.Settings::class, Route.Settings.serializer())
+            subclass(Route.DifferentScreen::class, Route.DifferentScreen.serializer())
         }
     }
 }

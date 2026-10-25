@@ -20,6 +20,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import com.coderpakistan.navigationcompose.screens.DifferentScreen
 import com.coderpakistan.navigationcompose.screens.TodoDetailScreen
 import com.coderpakistan.navigationcompose.screens.TodoListScreen
 
@@ -35,15 +36,20 @@ fun NavigationRoot(
     val navigator = remember {
         Navigator(navigationState)
     }
+
+    val isTopLevelRoute = navigationState.currentRoute in TOP_LEVEL_DESTINATIONS.keys
+
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            TodoNavigationBar(
-                selectedKey = navigationState.topLevelRoute,
-                onSelectKey = {
-                    navigator.navigate(it)
-                }
-            )
+            if (isTopLevelRoute) {
+                TodoNavigationBar(
+                    selectedKey = navigationState.topLevelRoute,
+                    onSelectKey = {
+                        navigator.navigate(it)
+                    }
+                )
+            }
         }
     ) { innerPadding ->
         NavDisplay(
@@ -63,7 +69,7 @@ fun NavigationRoot(
                     entry<Route.TodoFavorites> {
                         TodoListScreen(
                             onTodoClick = {
-                                navigator.navigate(Route.TodoDetail(it))
+                                navigator.navigate(Route.DifferentScreen)
                             }
                         )
                     }
@@ -71,6 +77,9 @@ fun NavigationRoot(
                         TodoDetailScreen(
                             todo = it.todo
                         )
+                    }
+                    entry<Route.DifferentScreen> {
+                        DifferentScreen()
                     }
                     entry<Route.Settings> {
                         Box(

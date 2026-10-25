@@ -14,6 +14,6 @@ fun DifferentScreen(modifier: Modifier = Modifier) {
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("Settings")
+        Text("Different Screen")
     }
 }
