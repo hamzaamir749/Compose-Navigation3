@@ -1,5 +1,10 @@
 package com.coderpakistan.navigationcompose.navigation
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -62,6 +67,18 @@ fun NavigationRoot(
                 .fillMaxSize()
                 .padding(innerPadding),
             onBack = navigator::goBack,
+            transitionSpec = {
+                slideInHorizontally { it } + fadeIn() togetherWith
+                        slideOutHorizontally { -it } + fadeOut()
+            },
+            popTransitionSpec = {
+                slideInHorizontally { -it } + fadeIn() togetherWith
+                        slideOutHorizontally { it } + fadeOut()
+            },
+            predictivePopTransitionSpec = {
+                slideInHorizontally { -it } + fadeIn() togetherWith
+                        slideOutHorizontally { it } + fadeOut()
+            },
             sceneStrategies = listOf(rememberListDetailSceneStrategy()),
             entries = navigationState.toEntries(
                 entryProvider {
